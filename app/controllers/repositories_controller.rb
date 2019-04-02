@@ -1,5 +1,5 @@
 class RepositoriesController < ApplicationController
-  
+
   def index
     resp = Faraday.get("https://api.foursquare.com/v2/lists/self/tips") do |req|
    req.params['oauth_token'] = session[:token]
