@@ -14,5 +14,5 @@ class SessionsController < ApplicationController
     session[:token] = body['access_token']
     redirect_to root_path
   end
-  
+
 end
