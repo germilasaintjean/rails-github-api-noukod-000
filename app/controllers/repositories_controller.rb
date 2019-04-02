@@ -1,11 +1,27 @@
 class RepositoriesController < ApplicationController
 
   def index
-    resp = Faraday.get("https://api.foursquare.com/v2/lists/self/tips") do |req|
-   req.params['oauth_token'] = session[:token]
-   req.params['v'] = '20160201'
- end
- @results = JSON.parse(resp.body)["response"]["list"]["listItems"]["items"]
-  end
+   user = Faraday.get 'https://api.github.com/user' do |req|
+     req.headers['Authorization'] = 'token ' + session[:token]
+     req.headers['Accept'] = 'application/json'
+   end
 
+   @user_data = JSON.parse(user.body)
+
+   repos = Faraday.get 'https://api.github.com/user/repos' do |req|
+     req.headers['Authorization'] = 'token ' + session[:token]
+     req.headers['Accept'] = 'application/json'
+   end
+
+   @repo_data = JSON.parse(repos.body)
+ end
+
+ def create
+   response = Faraday.post 'https://api.github.com/user/repos' do |req|
+     req.body = { 'name': params[:name] }.to_json
+     req.headers['Authorization'] = 'token ' + session[:token]
+     req.headers['Accept'] = 'application/json'
+   end
+   redirect_to '/'
+ end
 end
